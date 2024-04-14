@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+
+{% block title %} {{task_detail.title}} {% endblock title %}
+
+
+
+
+{% block content %}
+    
+<div class="ui segment centered ">
+    <p class="ui big header centered"> Задача: «{{ task_detail.title }}»	</p>
+</div>
+
+<div class="ui basic ">
+    {% if not task_detail.text %}
+    <p> Дополнительных примечаний к задаче нет </p>
+
+    {% else %}
+    <center>
+    <p>{{task_detail.text}}</p>
+    </center>
+    {% endif %}
+    
+  </div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div>
+
+    
+    {% if not task_detail.image %}
+    <center>
+        <p>Вы можете добавить изображение для своих заметок</p>
+    </center>
+    {% else %}
+
+    <div class="ui">
+        <img class="ui centered image big" src="{{task_detail.image.url}}">
+    </div>
+    {% endif %}
+        
+
+</div>
+    
+{% include 'task/includes/comment_form.html' %}
+  
+        
+
+
+{% endblock content %}
+    

@@ -1,0 +1,10 @@
+<h3> Add comment </h3>
+
+
+
+<form action="{% url "commetd" task_detail.id task_detail.slug %}" method="post">
+
+    {{form.as_p}}
+    <input type="submit">
+    {% csrf_token %}
+</form>
