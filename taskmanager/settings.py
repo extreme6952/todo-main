@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'todo6.urls'
+ROOT_URLCONF = 'taskmanager.urls'
 
 TEMPLATES = [
     {
@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'todo6.wsgi.application'
+WSGI_APPLICATION = 'taskmanager.wsgi.application'
 
 
 # Database
@@ -123,7 +123,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'todo6/static'
+    BASE_DIR / 'taskmanager/static'
 ]
 
 STATIC_ROOT = 'staticfiles'
