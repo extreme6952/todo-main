@@ -1,10 +1,20 @@
 <h3> Add comment </h3>
 
 
+<div class="ui comments">
+    <div class="comment">
+        <div class="content">
 
-<form action="{% url "commetd" task_detail.id task_detail.slug %}" method="post">
-
-    {{form.as_p}}
-    <input type="submit">
-    {% csrf_token %}
-</form>
+ <form action="{% url  "commetd" task_detail.id task_detail.slug %}" class="ui reply form" method="post" >
+      <div class="field">
+        <div class="aria">
+         {{form.body}} 
+         <input type="submit">
+        </div>
+      </div>
+      {% csrf_token %}
+    </form>
+</div>
+</div>
+</div>
+</div>

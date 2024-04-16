@@ -107,3 +107,18 @@ class Comment(models.Model):
     def __str__(self):
 
         return f"Comment {self.user} by {self.task}"
+    
+
+class Profile(models.Model):
+
+    user = models.OneToOneField(User,
+                                related_name='profiles',
+                                on_delete=models.CASCADE)
+    
+    photo = models.ImageField(upload_to='profile/%d/%m/%y',blank=True)
+
+
+    def __str__(self):
+
+        return f"Profile the {self.user.username}"
+    

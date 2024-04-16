@@ -30,8 +30,9 @@
 <br>
 <br>
 <br>
-<div>
 
+
+<div>
     
     {% if not task_detail.image %}
     <center>
@@ -43,9 +44,35 @@
         <img class="ui centered image big" src="{{task_detail.image.url}}">
     </div>
     {% endif %}
-        
-
 </div>
+
+{% for comment in comments %}
+<div class="ui comments">
+    
+    <div class="comment">
+      <a class="avatar">
+        {% if comment.user.profiles %}
+        {% for profile in comment.user.profiles.all %}
+        <img src="{{ profile.photo.url }}">
+        {% endfor %}
+        {% endif %}
+      </a>
+      
+      <div class="content">
+        <a class="author"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> {{comment.user}} </font></font></a>
+        <div class="metadata">
+          <div class="date"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{comment.created}}</font></font></div>
+        </div>
+        <div class="text">
+          <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> {{comment.body}} </font></font></p>
+       
+        </div>
+     
+      
+    </div>
+    </div>
+</div>
+{% endfor %}
     
 {% include 'task/includes/comment_form.html' %}
   
