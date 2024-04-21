@@ -1,3 +1,5 @@
+from django.forms import BaseModelForm
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 
 from .forms import *
@@ -13,6 +15,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from django.views.decorators.csrf import csrf_exempt
+
+from django.views.generic.edit import CreateView
+
+from django.urls import reverse
+
 
 
 
@@ -110,6 +117,7 @@ def delete_task(request,task_id,slug):
 
     return redirect('index')
 
+@login_required
 @require_POST
 def task_comment(request,task_id,slug):
 
@@ -152,3 +160,55 @@ def task_comment(request,task_id,slug):
                   {'form':form,
                    'comment':comment,
                    'task':task})
+
+
+@login_required
+def like_post(request, id, slug):
+    task = get_object_or_404(Task, id=id, slug=slug)
+
+    try:
+        if request.user in task.users_like.all():
+            # Пользователь уже поставил лайк этому посту, удаляем его
+            task.users_like.remove(request.user)
+            return redirect(task.get_absolute_url())
+        else:
+            # Пользователь ещё не поставил лайк, добавляем его
+            task.users_like.add(request.user)
+            return redirect(task.get_absolute_url())
+    except Task.DoesNotExist:
+        # Если объект Task не найден, перенаправляем пользователя на страницу 404
+        return redirect('404')
+    
+
+def user_registration(request):
+
+    if request.method=='POST':
+
+        user_form = UserRegistrationForm(request.POST)
+
+        if user_form.is_valid():
+
+            new_user = user_form.save(commit=False)
+
+            new_user.set_password(user_form.cleaned_data['password'])
+
+            new_user.save()
+
+            Profile.objects.create(user=new_user)
+
+            messages.success(request,'Спасибо,что зарегестрировались на нашем сайте')
+
+            return redirect('index')
+        
+        else:
+
+            messages.error(request,
+                           'При заполнении данных произошла ошибка')
+            
+    else:
+
+        user_form = UserRegistrationForm()
+
+    return render(request,
+                  'registration/user_registration.html',
+                  {'user_form':user_form})

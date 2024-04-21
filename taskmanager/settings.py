@@ -137,4 +137,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 MEDIA_URL = 'media/'
 
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = 'index'
+
+LOGIN_URL = 'login'
+
+LOGOUT_URL = 'logout'

@@ -29,3 +29,4 @@ class CommentAdmin(admin.ModelAdmin):
 class ProfileAdmin(admin.ModelAdmin):
 
     list_display = ['user']
+

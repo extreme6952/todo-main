@@ -44,6 +44,9 @@ class Task(models.Model):
 
     updated = models.DateTimeField(auto_now=True,null=True)
 
+    users_like = models.ManyToManyField(User,
+                                        related_name='user_like',
+                                        blank=True)
 
 
     class Meta:
@@ -74,8 +77,7 @@ class Task(models.Model):
 
 
 
-
-
+    
 
 class Comment(models.Model):
 
