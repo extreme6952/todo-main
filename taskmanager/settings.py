@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from telnetlib import AUTHENTICATION
+
+from django.conf.global_settings import ABSOLUTE_URL_OVERRIDES
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +35,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'actions.apps.ActionsConfig',
     'tasktodo.apps.TasktodoConfig',
+    'easy_thumbnails',
+    'user_visit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'user_visit.middleware.UserVisitMiddleware',
 ]
 
 ROOT_URLCONF = 'taskmanager.urls'
@@ -77,8 +85,8 @@ WSGI_APPLICATION = 'taskmanager.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'todotask',
-        'USER': 'taskmanager',
+        'NAME': 'task',
+        'USER': 'postgres',
         'PASSWORD':'qwerty21',
         'PORT':5432,
         'HOST':'localhost',
@@ -103,6 +111,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
 
 
 # Internationalization
@@ -137,8 +147,19 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 MEDIA_URL = 'media/'
 
+
 LOGIN_REDIRECT_URL = 'index'
 
 LOGIN_URL = 'login'
 
 LOGOUT_URL = 'logout'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'tasktodo.authentication.EmailAuthBackend',
+]
+
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user' : lambda u:reverse_lazy('user_detail',
+                                        args=[u.username])
+}

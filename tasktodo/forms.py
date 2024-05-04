@@ -3,19 +3,15 @@ from django import forms
 
 from .models import *
 
+from actions.models import Comment
+
+from django.contrib.contenttypes.models import ContentType
+
 from django.contrib.auth.models import User
 
 
 
 
-
-class CommentForm(forms.ModelForm):
-
-    class Meta:
-
-        model = Comment
-
-        fields = ['body']
 
 
 
@@ -64,4 +60,9 @@ class UserRegistrationForm(forms.ModelForm):
 
         return cd['password2']
     
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']  # Поля вашей модели комментариев
+
     

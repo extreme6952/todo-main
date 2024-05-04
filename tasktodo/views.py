@@ -14,16 +14,12 @@ from django.contrib.auth.decorators import login_required
 
 from django.contrib import messages
 
-from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 
-from django.views.generic.edit import CreateView
-
-from django.urls import reverse
+from actions.models import *
 
 
-
-
-
+@login_required
 def task_list(request):
 
     task = Task.objects.all()
@@ -65,7 +61,7 @@ def task_list(request):
                   {'task':task,
                    'form':form})
 
-
+@login_required
 def task_detail(request,task_id,slug):
 
     task = get_object_or_404(Task,
@@ -73,9 +69,10 @@ def task_detail(request,task_id,slug):
                              slug=slug)
     
     form = CommentForm()
-
-    comments = task.comments.filter(active=True)
-
+    
+    comments = Comment.objects.filter(active=True)
+    
+    
     
     
 
@@ -83,8 +80,8 @@ def task_detail(request,task_id,slug):
     return render(request,
                   'task/task_detail.html',
                   {'task_detail':task,
-                   'form':form,
-                   'comments':comments})
+                   'comments':comments,
+                   'form':form})
 
 def update_task(request,slug,task_id):
 
@@ -117,49 +114,52 @@ def delete_task(request,task_id,slug):
 
     return redirect('index')
 
+
+
+
+
+# comment task in contenttype
 @login_required
 @require_POST
-def task_comment(request,task_id,slug):
+def add_comment(request):
 
-    
+    content_type = ContentType.objects.get_for_model(Task)
+
+    task = get_object_or_404(Task, 
+                            )
 
     if request.method=='POST':
-
-        task = get_object_or_404(Task,
-                             id=task_id,
-                             slug=slug)
 
         form = CommentForm(data=request.POST)
 
         if form.is_valid():
 
-            comment = form.save(commit=False)
+            new_comment = form.save(commit=False)
 
-            comment.user = request.user
+            new_comment.user = request.user
 
-            comment.task = task
+            new_comment.content_type = content_type            
 
-            comment.save()
+            new_comment.save()
 
-            messages.success(request,
-                             'Ваш комментарий был успешно добавлен')
+            messages.success(request,'Ваш комментарий успешно добавлен')
 
             return redirect(task.get_absolute_url())
         
         else:
 
-            messages.error(request,
-                           'При заполнении формы произошла ошибка')
-            
-    else:
+            form = CommentForm()
 
-        form = CommentForm()
-
+    
     return render(request,
                   'task/includes/comment_form.html',
                   {'form':form,
-                   'comment':comment,
-                   'task':task})
+                   'comment':new_comment,
+                   'task':content_type})
+
+
+
+
 
 
 @login_required
@@ -212,3 +212,28 @@ def user_registration(request):
     return render(request,
                   'registration/user_registration.html',
                   {'user_form':user_form})
+
+
+
+@login_required
+def user_list(request):
+
+    users = User.objects.filter(is_active=True)
+
+    return render(request,
+                  'task/user_list.html',
+                  {'users':users})
+
+
+
+
+@login_required
+def user_detail(request,username):
+
+    user_detail = get_object_or_404(User,
+                                    is_active=True,
+                                    username=username)
+    
+    return render(request,
+                  'task/user_detail.html',
+                  {'user_detail':user_detail})

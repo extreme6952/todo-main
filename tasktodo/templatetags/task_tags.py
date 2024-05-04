@@ -1,6 +1,6 @@
 from django import template
 
-from ..models import Task,Comment
+from ..models import Task
 
 register = template.Library()
 

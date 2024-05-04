@@ -16,11 +16,15 @@ urlpatterns = [
 
     path('delete/<int:task_id>/<slug:slug>/',views.delete_task,name='delete_suka'),
 
-    path('comment/<int:task_id>/<slug:slug>',views.task_comment, name='commetd'),
-
     path('<int:id>/<slug:slug>/like/',views.like_post,name='task_like'),
 
-    path('registration/',views.user_registration,name='user_registration')
+    path('comment/',views.add_comment,name='commetd'),
+
+    path('registration/',views.user_registration,name='user_registration'),
+
+    path('user-list/',views.user_list,name='user_list'),
+
+    path('user-detail/<username>/',views.user_detail,name='user_detail')
     
     
 ]

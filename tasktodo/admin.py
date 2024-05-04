@@ -17,16 +17,16 @@ class TaskAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug':('title',)}
 
 
-@admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):
-
-    list_display = ['task','user','created','active']
-
-    list_filter = ['created','updated']
 
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
 
-    list_display = ['user']
+    list_display = ['user',]
+
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+
+    list_display = ['user_from','user_to']
 

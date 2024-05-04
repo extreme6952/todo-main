@@ -54,16 +54,22 @@
 <br>
 <br>
 <center>
+{% with  total_likes=task_detail.users_like.count users_like=task_detail.users_like.all  %}
+
+
 {% for comment in comments %}
 
 <div class="ui comments">
     
     <div class="comment">
-      <a class="avatar">
-        {% if comment.user.profiles %}
-        {% for profile in comment.user.profiles.photo.all %}
-        <img src="{{ profile.photo.url }}">
-        {% endfor %}
+
+      
+      
+        
+      
+        {% if comment.user.profile.photo %}
+        <a class="avatar">
+        <img src="{{ comment.user.profile.photo.url }}">
         {% endif %}
       </a>
       
@@ -73,7 +79,7 @@
           <div class="date"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{comment.created}}</font></font></div>
         </div>
         <div class="text">
-          <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> {{comment.body}} </font></font></p>
+          <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> {{comment.text}} </font></font></p>
        
         </div>
      
@@ -82,9 +88,11 @@
     </div>
 </div>
 
+
 {% endfor %}
+
 </center>
-{% with  total_likes=task_detail.users_like.count users_like=task_detail.users_like.all  %}
+
 
 <a href="{% url "task_like" task_detail.id task_detail.slug %}">
 <div class="ui labeled button" tabindex="0">
@@ -96,7 +104,6 @@
     Unlike
   {% endif %}
 
-  
   </div>
 </a>
 
@@ -106,8 +113,7 @@
 </div>
 {% include 'task/includes/comment_form.html' %}
   
-        
-
 {% endwith %}
+
 {% endblock content %}
     

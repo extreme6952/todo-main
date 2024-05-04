@@ -1,9 +1,9 @@
-from typing import Iterable
 from django.db import models
 
 from django.utils import timezone
 
 from django.utils.text import slugify
+
 
 from unidecode import unidecode
 
@@ -15,6 +15,10 @@ from django.contrib.auth.models import User
 from imagekit.models import ProcessedImageField
 
 from imagekit.processors import ResizeToFill
+
+from easy_thumbnails.fields import ThumbnailerImageField
+
+from django.contrib.auth import get_user_model
 
 
 
@@ -29,12 +33,12 @@ class Task(models.Model):
 
     text = models.TextField(blank=True)
 
-    image = ProcessedImageField(upload_to='task_image/%Y/%m/%d',
-                                processors=[ResizeToFill(820,500)],
-                                format='JPEG',
-                                options={'quality': 80},
-                                blank=True,
-                                null=True)
+    image = ThumbnailerImageField(upload_to='task_image/%Y/%m/%d', 
+                                  resize_source=dict(quality=95, 
+                                                     size=(820,520), 
+                                                     sharpen=True),
+                                                     blank=True,
+                                                     null=True)
 
     is_complete = models.BooleanField(default=False)
 
@@ -79,23 +83,38 @@ class Task(models.Model):
 
     
 
-class Comment(models.Model):
+class Profile(models.Model):
 
-    task = models.ForeignKey(Task,
-                             on_delete=models.CASCADE,
-                             related_name='comments')
+    user = models.OneToOneField(User,
+                                on_delete=models.CASCADE)
     
-    user = models.ForeignKey(User,
-                             on_delete=models.CASCADE,
-                             null=True)
+  
+    photo = ThumbnailerImageField(upload_to='profile/%Y/%m/%d', 
+                                  resize_source=dict(quality=95, 
+                                                     size=(320,320), 
+                                  sharpen=True))
 
-    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True,
+                                   null=True)
 
+  
+    def __str__(self):
+
+        return f"Profile the {self.user.username}"
+    
+
+
+class Contact(models.Model):
+
+    user_from = models.ForeignKey(User,
+                                  on_delete=models.CASCADE,
+                                  related_name='user_from_following')
+    
+    user_to = models.ForeignKey(User,
+                                on_delete=models.CASCADE,
+                                related_name='user_to_follow')
+    
     created = models.DateTimeField(auto_now_add=True)
-
-    updated = models.DateTimeField(auto_now=True)
-
-    active = models.BooleanField(default=True)
 
     class Meta:
 
@@ -105,22 +124,16 @@ class Comment(models.Model):
             models.Index(fields=['-created'])
         ]
 
-    
     def __str__(self):
 
-        return f"Comment {self.user} by {self.task}"
+        return f"{self.user_from} follows {self.user_to}"
     
 
-class Profile(models.Model):
+user_model = get_user_model()
 
-    user = models.OneToOneField(User,
-                                related_name='profiles',
-                                on_delete=models.CASCADE)
-    
-    photo = models.ImageField(upload_to='profile/%d/%m/%y',blank=True)
+user_model.add_to_class('following',
+                        models.ManyToManyField('self',through=Contact,
+                                               related_name='followers',
+                                               symmetrical=False))
 
-
-    def __str__(self):
-
-        return f"Profile the {self.user.username}"
     
