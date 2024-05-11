@@ -24,6 +24,7 @@ from django.contrib.auth import get_user_model
 
 
 
+
 class Task(models.Model):
 
     title = models.CharField(max_length=250)
