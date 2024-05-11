@@ -12,9 +12,6 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 
-from imagekit.models import ProcessedImageField
-
-from imagekit.processors import ResizeToFill
 
 from easy_thumbnails.fields import ThumbnailerImageField
 
@@ -138,3 +135,4 @@ user_model.add_to_class('following',
                                                symmetrical=False))
 
     
+
